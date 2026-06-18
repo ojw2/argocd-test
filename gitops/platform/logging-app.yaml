@@ -8,7 +8,7 @@ metadata:
 spec:
   project: secure-platform
   source:
-    repoURL: https://github.com/<YOUR_ORG>/<YOUR_REPO>.git
+    repoURL: https://github.com/ojw2/argocd-test.git
     targetRevision: main
     path: gitops/infrastructure/logging
   destination:

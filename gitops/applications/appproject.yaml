@@ -7,7 +7,7 @@ spec:
   description: Secure training platform — restricted sources and destinations
 
   sourceRepos:
-    - https://github.com/<YOUR_ORG>/<YOUR_REPO>.git
+    - https://github.com/ojw2/argocd-test.git
 
   destinations:
     - namespace: argocd
