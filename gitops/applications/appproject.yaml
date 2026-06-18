@@ -1,0 +1,58 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: secure-platform
+  namespace: argocd
+spec:
+  description: Secure training platform — restricted sources and destinations
+
+  sourceRepos:
+    - https://github.com/<YOUR_ORG>/<YOUR_REPO>.git
+
+  destinations:
+    - namespace: argocd
+      server: https://kubernetes.default.svc
+    - namespace: monitoring
+      server: https://kubernetes.default.svc
+    - namespace: logging
+      server: https://kubernetes.default.svc
+    - namespace: ingress-nginx
+      server: https://kubernetes.default.svc
+    - namespace: demo
+      server: https://kubernetes.default.svc
+    - namespace: dev
+      server: https://kubernetes.default.svc
+    - namespace: test
+      server: https://kubernetes.default.svc
+    - namespace: prod
+      server: https://kubernetes.default.svc
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: "rbac.authorization.k8s.io"
+      kind: ClusterRole
+    - group: "rbac.authorization.k8s.io"
+      kind: ClusterRoleBinding
+
+  namespaceResourceBlacklist:
+    - group: ""
+      kind: ResourceQuota
+    - group: ""
+      kind: LimitRange
+
+  roles:
+    - name: developer
+      description: Read-only access to applications
+      policies:
+        - p, proj:secure-platform:developer, applications, get, secure-platform/*, allow
+        - p, proj:secure-platform:developer, applications, sync, secure-platform/*, deny
+      groups:
+        - developers
+
+    - name: platform-admin
+      description: Full control over platform applications
+      policies:
+        - p, proj:secure-platform:platform-admin, applications, *, secure-platform/*, allow
+      groups:
+        - platform-admins

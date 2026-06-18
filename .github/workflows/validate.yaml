@@ -1,0 +1,38 @@
+name: Validate GitOps Manifests
+
+on:
+  pull_request:
+    paths:
+      - 'gitops/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Validate Kustomize builds
+        run: |
+          set -e
+          for dir in $(find gitops -name kustomization.yaml -exec dirname {} \;); do
+            echo "Building $dir"
+            kubectl kustomize "$dir" > /dev/null
+          done
+
+      - name: Validate YAML syntax (non-kustomize files)
+        run: |
+          set -e
+          pip install yamllint --quiet
+          yamllint -d "{extends: default, rules: {line-length: disable}}" gitops/
+
+      - name: Check for plaintext secrets
+        run: |
+          set -e
+          if grep -rIn --include="*.yaml" -E "(password|secret|token):\s*['\"]?[A-Za-z0-9+/]{8,}" gitops/ \
+             | grep -v "secretKeyRef\|secretName\|changeme\|<.*>"; then
+            echo "Potential plaintext secret detected — failing build"
+            exit 1
+          fi

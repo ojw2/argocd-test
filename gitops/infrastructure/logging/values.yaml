@@ -1,0 +1,13 @@
+promtail:
+  enabled: true
+
+loki:
+  persistence:
+    enabled: true
+    size: 10Gi
+  config:
+    limits_config:
+      retention_period: 168h   # 7 days
+
+grafana:
+  enabled: false   # Reuses Grafana deployed by kube-prometheus-stack

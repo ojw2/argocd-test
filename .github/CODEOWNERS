@@ -1,0 +1,14 @@
+# CODEOWNERS — enforces required reviewers per path
+# Requires branch protection rule: "Require review from Code Owners"
+
+# Platform-level changes require platform admin review
+/gitops/platform/                  @<YOUR_ORG>/platform-admins
+/gitops/applications/              @<YOUR_ORG>/platform-admins
+
+# Infrastructure changes require platform admin review
+/gitops/infrastructure/            @<YOUR_ORG>/platform-admins
+
+# Workload changes can be approved by app teams, but prod overlay
+# specifically requires platform admin sign-off
+/gitops/workloads/                 @<YOUR_ORG>/app-developers
+/gitops/workloads/*/overlays/prod/ @<YOUR_ORG>/platform-admins
